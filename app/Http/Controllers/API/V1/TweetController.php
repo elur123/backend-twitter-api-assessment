@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\ApiController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\TweetStoreRequest;
 
 use App\Models\Tweet;
@@ -27,10 +28,26 @@ class TweetController extends ApiController
      */
     public function store(TweetStoreRequest $request)
     {
-        Tweet::create([
+        $tweet = Tweet::create([
             'user_id' => $this->user->id,
             'content' => $request->content
         ]);
+
+        if (isset($request->files)) 
+        {
+            $files = $request->file('files');
+
+            foreach ($files as $file) {
+                
+                $fileName = $file->getClientOriginalName();
+                $fileUrl = Storage::putFileAs('public/tweet/'.$tweet->id, $file, $fileName);
+
+                $tweet->files()->create([
+                    'file_name' => $fileName,
+                    'file_url' => $fileUrl
+                ]);
+            }
+        }
 
         return $this->index();
     }

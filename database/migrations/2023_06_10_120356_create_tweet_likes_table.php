@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tweets', function (Blueprint $table) {
+        Schema::create('tweet_likes', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
-            $table->foreignId('user_id')->constrained();
-            $table->text('content');
-            $table->timestamps();
+            $table->foreignId('tweet_id')->constrained('tweets');
+            $table->foreignId('like_by')->constrained('users');
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tweets');
+        Schema::dropIfExists('tweet_likes');
     }
 };
