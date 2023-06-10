@@ -26,6 +26,7 @@ Route::prefix('v1')->name('v1.')->group(function() {
             Route::put('{user}', [UserController::class, 'update'])->name('update'); // Update user details based on user uuid
             Route::get('{user}/follower', [UserController::class, 'follower'])->name('follower'); // Get user follower using user uuid
             Route::get('{user}/followed', [UserController::class, 'followed'])->name('followed'); // Get user followed using user uuid
+            Route::get('{user}/suggestion', [UserController::class, 'suggestion'])->name('suggestion'); //  List of suggested users to follow using user uuid
             Route::post('{user}/follow', [UserController::class, 'follow'])->name('follow'); // Authenticated user follow user using user uuid
             Route::post('{user}/unfollow', [UserController::class, 'unfollow'])->name('unfollow'); // Authenticated user unfollow user using user uuid
         });

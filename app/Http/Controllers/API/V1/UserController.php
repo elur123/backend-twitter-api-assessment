@@ -70,6 +70,23 @@ class UserController extends ApiController
         ], 200);
     }
 
+    public function suggestion(User $user)
+    {
+        // Get the IDs of the users already being followed by the logged-in user
+        $followedUserIds = $user->followedUsers()
+        ->pluck('followed_id')
+        ->toArray();
+
+        // Get the suggested users
+        $suggestedUsers = User::whereNotIn('id', $followedUserIds)
+        ->whereNot('id', $user->id)
+        ->get();
+
+        return response()->json([
+            'suggestedUsers' => $suggestedUsers
+        ], 200);
+    }
+
     public function follow(Request $request, User $user)
     {
 
