@@ -40,6 +40,7 @@ class UserController extends ApiController
 
     public function update(UserUpdateRequest $request, User $user)
     {
+
         $user->update($request->except('password'));
 
         if (!empty($request->password)) 
