@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\TweetFileResource;
 
 use App\Models\Tweet;
 use App\Models\TweetFile;
@@ -16,7 +17,7 @@ class TweetFileController extends Controller
         $tweet->load('files');
 
         return response()->json([
-            'files' => $tweet->files
+            'files' => TweetFileResource::collection($tweet->files) 
         ], 200);
     }
 

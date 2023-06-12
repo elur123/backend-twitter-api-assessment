@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\ApiController;
 use Illuminate\Http\Request;
+use App\Http\Resources\TweetLikeResource;
 
 use App\Models\Tweet;
 use App\Models\TweetLike;
@@ -14,7 +15,7 @@ class TweetLikeController extends ApiController
         $tweet->load('likes.userLikeBy');
 
         return response()->json([
-            'likes' => $tweet->likes
+            'likes' => TweetLikeResource::collection($tweet->likes) 
         ], 200);
     }
 

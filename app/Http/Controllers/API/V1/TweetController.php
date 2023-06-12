@@ -6,6 +6,10 @@ use App\Http\Controllers\API\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\TweetStoreRequest;
+use App\Http\Resources\TweetResource;
+use App\Http\Resources\TweetFileResource;
+use App\Http\Resources\TweetCommentResource;
+use App\Http\Resources\TweetLikeResource;
 
 use App\Models\Tweet;
 class TweetController extends ApiController
@@ -15,11 +19,12 @@ class TweetController extends ApiController
     {
 
         $tweets = Tweet::query()
+        ->with('files', 'comments.userCommentBy', 'likes.userLikeBy')
         ->where('user_id', $this->user->id)
         ->get();
 
         return response()->json([
-            'tweets' => $tweets
+            'tweets' => TweetResource::collection($tweets)
         ], 200);
     }
 
@@ -40,7 +45,7 @@ class TweetController extends ApiController
             foreach ($files as $file) {
                 
                 $fileName = $file->getClientOriginalName();
-                $fileUrl = Storage::putFileAs('public/tweet/'.$tweet->id, $file, $fileName);
+                $fileUrl = Storage::putFileAs('public/tweet/'.$tweet->uuid, $file, $fileName);
 
                 $tweet->files()->create([
                     'file_name' => $fileName,
@@ -57,6 +62,17 @@ class TweetController extends ApiController
      */
     public function show(Tweet $tweet)
     {
+
+        $tweet->load('files', 'comments.userCommentBy', 'likes.userLikeBy');
+
+        $files = TweetFileResource::collection($tweet->files);
+        $comments = TweetCommentResource::collection($tweet->comments);
+        $likes = TweetLikeResource::collection($tweet->likes);
+
+        $tweet = $tweet->toArray();
+        $tweet['files'] = $files;
+        $tweet['comments'] = $comments;
+        $tweet['likes'] = $likes;
 
         return response()->json([
             'tweet' => $tweet
@@ -80,6 +96,22 @@ class TweetController extends ApiController
             'content' => $request->content
         ]);
 
+        if ($request->hasFile('files')) 
+        {
+            $files = $request->file('files');
+
+            foreach ($files as $file) {
+                
+                $fileName = $file->getClientOriginalName();
+                $fileUrl = Storage::putFileAs('public/tweet/'.$tweet->uuid, $file, $fileName);
+
+                $tweet->files()->create([
+                    'file_name' => $fileName,
+                    'file_url' => $fileUrl
+                ]);
+            }
+        }
+
         return $this->index();
     }
 
@@ -88,6 +120,15 @@ class TweetController extends ApiController
      */
     public function destroy(Tweet $tweet)
     {
+        //Delete tweet files directory
+        Storage::deleteDirectory('public/tweet/'.$tweet->uuid);
+
+        //Delete tweet relationship data
+        $tweet->files()->delete();
+        $tweet->comments()->delete();
+        $tweet->likes()->delete();
+
+        // Delete tweet
         $tweet->delete();
 
         return $this->index();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\ApiController;
 use Illuminate\Http\Request;
+use App\Http\Resources\TweetCommentResource;
 
 use App\Models\Tweet;
 use App\Models\TweetComment;
@@ -15,7 +16,7 @@ class TweetCommentController extends ApiController
         $tweet->load('comments.userCommentBy');
 
         return response()->json([
-            'comments' => $tweet->comments
+            'comments' => TweetCommentResource::collection($tweet->comments) 
         ], 200);
     }
 

@@ -22,8 +22,8 @@ class UserTest extends TestCase
 
         $response = $this->get('/api/v1/me');
 
-        $response->assertStatus(200)
-        ->assertJsonPath('user.email', $user->email);
+        $response->assertStatus(200);
+        $response->assertJsonPath('user.email', $user->email);
     }
 
     public function test_user_get_details_using_user_uuid(): void

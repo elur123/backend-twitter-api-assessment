@@ -6,6 +6,10 @@ use App\Http\Controllers\API\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\FollowedResource;
+use App\Http\Resources\FollowerResource;
+use App\Http\Resources\TweetResource;
+use App\Http\Resources\SuggestionResource;
 
 use App\Models\User;
 use App\Models\FollowedUser;
@@ -16,12 +20,21 @@ class UserController extends ApiController
     {
         $this->user->load(
             'followedUsers.followed', 
-            'followers.follower', 
+            'followerUsers.follower', 
             'tweets.author'
         );
 
+        $followedUsers = FollowedResource::collection($this->user->followedUsers);
+        $followerUsers = FollowerResource::collection($this->user->followerUsers);
+        $tweets = TweetResource::collection($this->user->tweets);
+
+        $user = $this->user->toArray();
+        $user['followed_users'] = $followedUsers;
+        $user['follower_users'] = $followerUsers;
+        $user['tweets'] = $tweets;
+
         return response()->json([
-            'user' => $this->user
+            'user' => $user
         ], 200);
     }
 
@@ -29,9 +42,18 @@ class UserController extends ApiController
     {
         $user->load(
             'followedUsers.followed', 
-            'followers.follower', 
+            'followerUsers.follower', 
             'tweets.author'
         );
+
+        $followedUsers = FollowedResource::collection($user->followedUsers);
+        $followerUsers = FollowerResource::collection($user->followerUsers);
+        $tweets = TweetResource::collection($user->tweets);
+
+        $user = $user->toArray();
+        $user['followed_users'] = $followedUsers;
+        $user['follower_users'] = $followerUsers;
+        $user['tweets'] = $tweets;
 
         return response()->json([
             'user' => $user
@@ -55,10 +77,11 @@ class UserController extends ApiController
 
     public function follower(User $user)
     {
-        $user->load('followers.follower');
+        $user->load('followerUsers.follower');
+
 
         return response()->json([
-            'followers' => $user->followers
+            'followers' =>  FollowerResource::collection($user->followerUsers)
         ], 200);
     }
 
@@ -84,7 +107,7 @@ class UserController extends ApiController
         ->get();
 
         return response()->json([
-            'suggestedUsers' => $suggestedUsers
+            'suggestedUsers' => SuggestionResource::collection($suggestedUsers) 
         ], 200);
     }
 

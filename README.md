@@ -13,3 +13,6 @@ Requirements: Use the latest version of Laravel
     - Follow/unfollow a user
     - List followed user's tweet
     - List suggested users to follow
+
+## Postman workspace link
+https://www.postman.com/telecoms-meteorologist-10516229/workspace/backend-twitter-clone-api
