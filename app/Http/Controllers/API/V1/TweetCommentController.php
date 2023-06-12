@@ -32,9 +32,7 @@ class TweetCommentController extends ApiController
             'comment' => $request->comment
         ]);
 
-        return response()->json([
-            'comments' => $tweet->comments
-        ], 200);
+        return $this->show($tweet);
     }
 
     public function updateComments(Request $request, Tweet $tweet, TweetComment $comment)
@@ -58,9 +56,7 @@ class TweetCommentController extends ApiController
             'comment' => $request->comment
         ]);
 
-        return response()->json([
-            'comments' => $tweet->comments
-        ], 200);
+        return $this->show($tweet);
     }
 
     public function delete(Tweet $tweet, TweetComment $comment)
@@ -69,9 +65,7 @@ class TweetCommentController extends ApiController
 
         $comment->delete();
 
-        return response()->json([
-            'comments' => $tweet->comments
-        ], 200); 
+        return $this->show($tweet);
     }
 
 }

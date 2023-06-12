@@ -33,7 +33,7 @@ class TweetController extends ApiController
             'content' => $request->content
         ]);
 
-        if (isset($request->files)) 
+        if ($request->hasFile('files')) 
         {
             $files = $request->file('files');
 

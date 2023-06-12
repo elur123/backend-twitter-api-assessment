@@ -32,7 +32,7 @@ class TweetFileController extends Controller
         foreach ($files as $file) 
         {
             $fileName = $file->getClientOriginalName();
-            $fileUrl = Storage::putFileAs('public/tweet/'.$tweet->id, $file, $fileName);
+            $fileUrl = Storage::putFileAs('public/tweet/'.$tweet->uuid, $file, $fileName);
 
             $tweet->files()->create([
                 'file_name' => $fileName,
@@ -40,9 +40,7 @@ class TweetFileController extends Controller
             ]);
         }
 
-        return response()->json([
-            'files' => $tweet->files
-        ], 200);
+        return $this->show($tweet);
     }
 
     public function delete(Tweet $tweet, TweetFile $file)
@@ -56,8 +54,6 @@ class TweetFileController extends Controller
         ->where('id', $file->id)
         ->delete();
 
-        return response()->json([
-            'files' => $tweet->files
-        ], 200);
+        return $this->show($tweet);
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tweet_id')->constrained('tweets');
             $table->string('file_name');
-            $table->tinyText('file_url');
+            $table->text('file_url');
             $table->timestamps();
         });
     }
