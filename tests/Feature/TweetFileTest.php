@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\File;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
@@ -50,6 +51,12 @@ class TweetFileTest extends TestCase
         ->first();
 
         Sanctum::actingAs($user, ['*']);
+
+        $directoryPath  = storage_path('app/public/temp');
+        if (!File::exists($directoryPath)) 
+        {
+            File::makeDirectory($directoryPath, 0777, true, true);
+        }
 
         $tempDirectory = storage_path('app/public/temp');
         $imagePath = $this->faker->image($tempDirectory, 360, 360, 'animals', true, true, 'cats', true, 'png');
