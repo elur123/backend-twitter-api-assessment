@@ -19,6 +19,6 @@ https://www.postman.com/telecoms-meteorologist-10516229/workspace/backend-twitte
 
 <h5>Global variables</h5>
     <ul> 
-        <li>base_url (url of the project)<li>
-        <li>api_token (user token from login response if authenticated)<li>
+        <li>base_url (url of the project)</li>
+        <li>api_token (user token from login response if authenticated)</li>
     </ul>
