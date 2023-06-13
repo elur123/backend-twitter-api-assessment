@@ -18,5 +18,7 @@ Requirements: Use the latest version of Laravel
 https://www.postman.com/telecoms-meteorologist-10516229/workspace/backend-twitter-clone-api
 
 <h5>Global variables</h5>
-    - base_url (url of the project)
-    - api_token (user token from login response if authenticated)
+    <ul> 
+        <li>base_url (url of the project)<li>
+        <li>api_token (user token from login response if authenticated)<li>
+    </ul>
